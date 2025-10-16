@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI虚拟农场 - 机器学习的核心学习范式</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 10px; }
+        .task-card { 
+            border: 2px solid #42a5f5; 
+            border-radius: 10px; 
+            padding: 20px; 
+            background-color: #f8f9fa;
+            min-height: 550px;
+        }
+        .task-title { color: #1976d2; border-bottom: 1px dashed #42a5f5; padding-bottom: 5px; margin-bottom: 5px; }
+        .image-gallery { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            margin: 15px 0; 
+            max-height: 220px; 
+            overflow-y: auto; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .soil-img { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            transition: transform 0.2s;
+            border: 2px solid #ddd;
+        }
+        .soil-img:hover { 
+            transform: scale(1.05); 
+            border-color: #42a5f5;
+        }
+        .control-panel { margin: 25px 0; }
+        .btn { 
+            background-color: #42a5f5; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        .btn:hover { background-color: #1976d2; }
+        .feedback { 
+            margin-top: 10px; 
+            padding: 12px; 
+            border-radius: 5px; 
+            background-color: #e3f2fd; 
+            min-height: 20px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .classify-tip { 
+            margin: 10px 0; 
+            font-size: 14px; 
+            color: #555;
+        }
+        .result-section { margin-top: 30px; }
+        .cluster-result {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .cluster-group {
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #42a5f5;
+            background-color: rgba(66, 165, 245, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>🌱 AI虚拟农场 - 机器学习的核心学习范式</h1>
+    <p>任务说明：无标签农作物照片，先自主分类，再看AI如何“自主找规律”聚类！</p>
+
+    <div class="task-card">
+        <h2 class="task-title">任务2：无监督学习——农作物聚类</h2>
+        <p>农作物照片无标签，尝试自主分类后，看AI如何“自己找规律”分组！</p>
+
+        <div>
+            <h4>无标签农作物图片库（1-10号照片）</h4>
+            <div class="classify-tip">🔍 提示：尝试按“籽粒颜色”“穗状花序形状”等特征自主分类</div>
+            <div class="image-gallery" id="soilGallery">
+                <!-- 初始化1-10号无标签农作物照片 -->
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="showUserClassify()">先找特征分类</button>
+            <button class="btn" onclick="trainUnsupervised()">再AI无监督聚类</button>
+        </div>
+
+        <div class="result-section">
+            <h4>分类结果对比</h4>
+            <div id="classificationResult" style="margin: 10px 0; font-size: 14px;">
+                点击“先找特征分类”或“再AI无监督聚类”查看结果
+            </div>
+            <div class="cluster-result" id="clusterResult">
+                <!-- 聚类结果将动态生成 -->
+            </div>
+        </div>
+
+        <div class="feedback" id="unsupervisedFeedback">
+            操作提示：先观察图片库中农作物的差异，尝试自主分类，再点击“AI无监督聚类”，对比AI的分组逻辑~
+        </div>
+    </div>
+
+    <script>
+        // 初始化1-10号无标签农作物图片库
+        const soilGallery = document.getElementById('soilGallery');
+        for (let i = 201; i <= 210; i++) {
+            const img = document.createElement('img');
+            img.className = 'soil-img';
+            img.src = `${i}.png`; // 引用1-10号图片（需与HTML同目录）
+            img.title = `${i-200}号农作物`;
+            img.dataset.id = i;
+            soilGallery.appendChild(img);
+        }
+
+        // 存储用户分类结果
+        let userClusters = {};
+
+        // 无监督学习：用户自主分类
+        function showUserClassify() {
+            const feedback = document.getElementById('unsupervisedFeedback');
+            feedback.textContent = '请记录你对1-10号农作物的分类逻辑（如按“籽粒颜色”“穗状花序形状”分组），再点击“AI无监督聚类”对比！';
+            document.getElementById('classificationResult').textContent = 
+                '请记录你的分类：    \n' +
+                '组1：______ 号农作物（分类依据：______）    \n' +
+                '组2：______ 号农作物（分类依据：______）    \n' +
+                '组3：______ 号农作物（分类依据：______）';
+        }
+
+        // 无监督学习：AI聚类
+       //组1：水稻  组2：小麦  组3：大麦
+        function trainUnsupervised() {
+            // 模拟AI聚类逻辑（按图片特征相似度分组，此处简化为3类）
+            const clusters = {
+                '组1（籽粒颜色呈金黄色，穗状花序呈圆锥形）': [201, 203, 205, 208],
+                '组2（籽粒颜色呈白色；穗状花序呈椭圆形）': [202, 207, 210],
+                '组3（籽粒颜色呈棕色，穗状花序呈长条形）': [204, 206, 209]
+            };
+
+            // 生成聚类结果展示
+            const clusterResult = document.getElementById('clusterResult');
+            clusterResult.innerHTML = '';
+            for (const [group, ids] of Object.entries(clusters)) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'cluster-group';
+                groupDiv.innerHTML = `<strong>${group}</strong><br>`;
+                ids.forEach(id => {
+                    const img = document.createElement('img');
+                    img.src = `${id}.png`;
+                    img.width = 60;
+                    img.height = 60;
+                    img.style.borderRadius = '4px';
+                    groupDiv.appendChild(img);
+                });
+                clusterResult.appendChild(groupDiv);
+            }
+
+            document.getElementById('classificationResult').textContent = 
+                'AI聚类结果：根据“籽粒颜色”“穗状花序形状”等隐藏特征，将农作物分为3组，对比你的分类，看看有什么异同？';
+            document.getElementById('unsupervisedFeedback').textContent = 
+                'AI无监督学习的核心：无需标签，自主挖掘数据中的隐藏规律（如籽粒颜色、穗状花序形状）！';
+        }
+    </script>
+</body>
+</html>
