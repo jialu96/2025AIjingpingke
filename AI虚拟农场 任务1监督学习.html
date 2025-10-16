@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI虚拟农场 - 机器学习的核心学习范式</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 10px; }
+        .task-card { 
+            border: 2px solid #6b9b37; 
+            border-radius: 10px; 
+            padding: 10px; 
+            background-color: #f8f9fa;
+            min-height: 500px;
+        }
+        .task-title { color: #2d6a4f; border-bottom: 1px dashed #6b9b37; padding-bottom: 5px; margin-bottom: 5px; }
+        .image-gallery { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            margin: 15px 0; 
+            max-height: 220px; 
+            overflow-y: auto; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .plant-img { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+        .plant-img:hover { 
+            transform: scale(1.05); 
+            border-color: #4caf50;
+        }
+        .plant-img.immature { border-color: #2e7d32; } /* 未成熟作物：蓝色边框 */
+        .plant-img.mature { border-color: #ef5350; } /* 成熟作物：红色边框 */
+        .control-panel { margin: 25px 0; }
+        .btn { 
+            background-color: #4caf50; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        .btn:hover { background-color: #388e3c; }
+        .feedback { 
+            margin-top: 20px; 
+            padding: 12px; 
+            border-radius: 5px; 
+            background-color: #e8f5e9; 
+            min-height: 70px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .label-tip { 
+            margin: 10px 0; 
+            font-size: 14px; 
+            color: #555;
+        }
+        .test-section { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h1>🌱 AI虚拟农场 - 机器学习的核心学习范式</h1>
+    <p>任务说明：通过带标签的番茄照片，训练AI识别“成熟番茄”与“未成熟番茄”！</p>
+
+    <!-- 仅保留监督学习任务，隐藏其余两个 -->
+    <div class="task-card">
+        <h2 class="task-title">任务1：监督学习——番茄成熟度分类</h2>
+        <p>作物照片已标注“成熟（红色边框）”和“未成熟（蓝色边框）”，观察特征后教AI识别吧！</p>
+
+        <div>
+            <h4>带标签的作物图片库（1-10号照片）</h4>
+            <div class="label-tip">🔍 提示：1-5号为成熟作物（红色边框），6-10号为未成熟作物（蓝色边框）</div>
+            <div class="image-gallery" id="cropGallery">
+                <!-- 初始化1-10号照片，自动分配成熟/未成熟标签 -->
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <button class="btn" onclick="trainSupervised()">训练AI（学习作物特征）</button>
+            <button class="btn" onclick="testSupervised()">测试AI（新作物识别）</button>
+        </div>
+
+        <div class="test-section">
+            <h4>AI测试区（新作物识别）</h4>
+            <div class="image-gallery" id="testGallery">
+                <!-- 测试用作物照片（可自行替换为其他照片） -->
+                <img src="111.png" class="plant-img" title="测试作物1" data-mature="true">
+                <img src="112.png" class="plant-img" title="测试作物2" data-mature="false">
+                <img src="113.png" class="plant-img" title="测试作物3" data-mature="true">
+                <img src="114.png" class="plant-img" title="测试作物4" data-mature="false">
+                <img src="115.png" class="plant-img" title="测试作物5" data-mature="true">
+            </div>
+        </div>
+
+        <div class="feedback" id="supervisedFeedback">
+            操作提示：先观察图片库中成熟/未成熟作物的差异，再点击“训练AI”，最后用“测试AI”验证效果~
+        </div>
+    </div>
+
+    <script>
+        // 初始化1-10号作物图片库（1-5成熟，6-10未成熟）
+        const cropGallery = document.getElementById('cropGallery');
+        for (let i = 101; i <= 110; i++) {
+            const img = document.createElement('img');
+            img.className = `plant-img ${i <= 105 ? 'mature' : 'immature'}`; // 1-5成熟（红边框），6-10未成熟（蓝边框）
+            img.src = `${i}.png`; // 引用1-10号图片（需与HTML同目录）
+            img.title = `${i-100}号作物（${i <= 105 ? '成熟' : '未成熟'}）`; // 鼠标悬停显示标签
+            img.dataset.mature = i <= 105; // 存储真实成熟度（供AI测试用）
+            cropGallery.appendChild(img);
+        }
+
+        // 监督学习：训练逻辑（模拟AI学习特征）
+        function trainSupervised() {
+            const feedback = document.getElementById('supervisedFeedback');
+            // 模拟AI学习过程，显示特征提取逻辑
+            feedback.innerHTML = 
+                '✅ AI正在训练...<br>' +
+                '🔍 发现特征规律：<br>' +
+                '- 成熟作物（1-5号）：叶片颜色更深、果实颜色更偏红<br>' +
+                '- 未成熟作物（6-10号）：叶片颜色较浅、果实颜色更偏绿<br>' +
+                '📚 学习完成！可点击“测试AI”验证识别效果';
+        }
+
+        // 监督学习：测试逻辑（模拟AI识别新作物）
+        function testSupervised() {
+            const testImgs = document.getElementById('testGallery').children;
+            let correctCount = 0; // 正确识别数量
+
+            // 遍历测试图片，模拟AI识别（根据图片编号判断成熟度）
+            for (let i = 0; i < testImgs.length; i++) {
+                const img = testImgs[i];
+                const isMatureReal = img.dataset.mature === 'true'; // 真实成熟度
+                // AI识别逻辑：模拟根据图片特征判断（此处简化为匹配训练规律）
+                const isMatureAI = img.src.includes('1.png') || img.src.includes('3.png') || img.src.includes('5.png');
+                
+                // 统计正确数量，更新图片标题（显示识别结果）
+                if (isMatureAI === isMatureReal) correctCount++;
+                img.title = `AI识别：${isMatureAI ? '成熟' : '未成熟'}（${isMatureAI === isMatureReal ? '正确' : '错误'}）`;
+                // 识别错误时添加红色边框提示
+                img.style.borderColor = isMatureAI === isMatureReal ? '#4caf50' : '#ef5350';
+            }
+
+            // 计算正确率并显示反馈
+            const accuracy = (correctCount / testImgs.length) * 100;
+            document.getElementById('supervisedFeedback').innerHTML = 
+                `📊 AI测试完成！<br>` +
+                `📚 AI测试结果：第1、3、5张是成熟作物。第2、4张是未成熟作物。<br>` +
+                `✅ 正确识别：${correctCount}/${testImgs.length} 张<br>` +
+                `📈 识别正确率：${accuracy}%<br>` +
+                `💡 原理：AI记住了“成熟作物特征”，通过对比特征完成识别（这就是监督学习：有标签数据引导学习）`;
+        }
+    </script>
+</body>
+</html>
