@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI虚拟农场 - 强化学习（种植策略）</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 10px; }
+        .task-card { 
+            border: 2px solid #ff9800; 
+            border-radius: 10px; 
+            padding: 15px; 
+            background-color: #f8f9fa;
+            min-height: 500px;
+        }
+        .task-title { color: #e65100; border-bottom: 1px dashed #ff9800; padding-bottom: 5px; margin: 0 0 15px 0; }
+        .main-content {
+            display: flex;
+            flex-wrap: nowrap; /* 左右两部分强制一行 */
+            gap: 10px; /* 左右间距保持紧凑 */
+            margin: 10px 0;
+            align-items: center; /* 垂直居中对齐 */
+        }
+        /* 左侧控制区：确保三个选项一排 */
+        .control-section {
+            flex: 0 0 420px; /* 加宽控制区，容纳一排选项 */
+            padding-right: 5px;
+        }
+        .control-panel { 
+            display: flex; 
+            flex-wrap: nowrap; /* 禁止控制项换行，强制一排 */
+            gap: 8px; /* 控制项之间紧凑间距 */
+            margin: 5px 0; 
+            align-items: stretch; /* 控制组高度一致 */
+        }
+        .control-group {
+            flex: 1; /* 三个控制组均分宽度 */
+            min-width: 120px; /* 最小宽度，避免过窄 */
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .control-group h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            text-align: center; /* 标题居中，更整齐 */
+        }
+        /* 按钮面板 */
+        .button-panel {
+            margin: 12px 0 0 0;
+            text-align: center; /* 按钮居中，与控制项对齐 */
+        }
+        .btn { 
+            background-color: #ff9800; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px;
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        .btn:hover { background-color: #e65100; }
+        /* 右侧生长状态区 */
+        .growth-section {
+            flex: 1;
+            padding-left: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .growth-display {
+            margin: 5px 0;
+            text-align: center;
+        }
+        .plant-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 4px;
+            transition: transform 0.5s;
+        }
+        #growthScore {
+            margin: 8px 0 0 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        /* 实验记录与反馈 */
+        .history {
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+        }
+        .feedback { 
+            margin-top: 10px; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background-color: #fff3e0; 
+            min-height: 20px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        /* 下拉框样式统一 */
+        select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌱 AI虚拟农场 - 强化学习任务：种植策略优化</h1>
+    <p>任务说明：通过调整“浇水、光照、施肥”策略，让植物生长评分最高！AI会从反馈中学习最优策略~</p>
+
+    <div class="task-card">
+        <h2 class="task-title">任务3：强化学习——种植策略优化</h2>
+        <p>植物生长受“浇水、光照、施肥”影响，尝试不同组合，看AI如何通过“试错-反馈”找到最优策略！</p>
+
+        <div class="main-content">
+            <!-- 左侧控制区：浇水+光照+施肥一排排列 -->
+            <div class="control-section">
+                <div class="control-panel">
+                    <div class="control-group">
+                        <h4>浇水策略</h4>
+                        <select id="water">
+                            <option value="少">少</option>
+                            <option value="中">中</option>
+                            <option value="多">多</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <h4>光照时间</h4>
+                        <select id="light">
+                            <option value="短">短</option>
+                            <option value="中">中</option>
+                            <option value="长">长</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <h4>施肥量</h4>
+                        <select id="fertilizer">
+                            <option value="低">低</option>
+                            <option value="中">中</option>
+                            <option value="高">高</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-panel">
+                    <button class="btn" onclick="growPlant()">让植物生长</button>
+                    <button class="btn" onclick="resetExperiment()">重置实验</button>
+                </div>
+            </div>
+
+            <!-- 右侧生长状态区：与左侧紧凑对齐 -->
+            <div class="growth-section">
+                <div class="growth-display">
+                    <h4>植物生长状态</h4>
+                    <img src="1.png" class="plant-img" id="plantGrowth" alt="植物生长状态">
+                    <p id="growthScore">评分：待生长</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="history">
+            <h4>实验历史记录（请开始实验，记录将显示在这里...）</h4>
+            <div id="experimentHistory"></div>
+        </div>
+
+        <div class="feedback" id="reinforcementFeedback">
+            操作提示：尝试不同的“浇水+光照+施肥”组合，观察评分变化，找出让植物评分最高的最优策略！AI会像人类一样“从错误中学习，优化策略”~
+        </div>
+    </div>
+
+    <script>
+        let experimentCount = 0;
+        const maxExperiments = 27; // 覆盖所有策略组合的最大实验次数
+        const plantGrowth = document.getElementById('plantGrowth');
+        const growthScore = document.getElementById('growthScore');
+        const experimentHistory = document.getElementById('experimentHistory');
+        const reinforcementFeedback = document.getElementById('reinforcementFeedback');
+
+        // 生长评分逻辑：多浇水+长光照+中施肥为最优组合
+        function calculateScore(water, light, fertilizer) {
+            let score = 0;
+            // 浇水权重（多水最优）
+            score += water === '多' ? 3 : (water === '中' ? 2 : 1);
+            // 光照权重（长光照最优）
+            score += light === '长' ? 3 : (light === '中' ? 2 : 1);
+            // 施肥权重（中等施肥最优，避免过肥/过瘦）
+            score += fertilizer === '中' ? 3 : 1;
+            // 随机波动（模拟自然环境差异）
+            score += Math.floor(Math.random() * 2);
+            // 限制评分在1-10分区间
+            return Math.min(10, Math.max(1, score));
+        }
+
+        // 植物生长模拟
+        function growPlant() {
+            if (experimentCount >= maxExperiments) {
+                reinforcementFeedback.textContent = `已完成${maxExperiments}次实验！可分析历史记录，总结“多浇水+长光照+中施肥”的最优策略~`;
+                return;
+            }
+
+            // 获取当前选择的策略
+            const water = document.getElementById('water').value;
+            const light = document.getElementById('light').value;
+            const fertilizer = document.getElementById('fertilizer').value;
+            // 计算评分
+            const score = calculateScore(water, light, fertilizer);
+            experimentCount++;
+
+            // 更新植物状态（用1-5号图模拟生长递进，循环使用）
+            const imgIndex = Math.min(5, experimentCount);
+            plantGrowth.src = `${imgIndex}.png`;
+            growthScore.textContent = `评分：${score}`;
+
+            // 记录实验数据
+            experimentHistory.innerHTML += `第${experimentCount}次：浇水${water}+光照${light}+施肥${fertilizer} → 评分${score}<br>`;
+
+            // 智能反馈提示
+            if (score >= 9) {
+                reinforcementFeedback.textContent = `第${experimentCount}次实验评分${score}分！找到最优策略啦，可重复验证稳定性~`;
+            } else if (score >= 7) {
+                reinforcementFeedback.textContent = `第${experimentCount}次实验评分${score}分，接近最优！可调整施肥为“中”试试~`;
+            } else {
+                reinforcementFeedback.textContent = `第${experimentCount}次实验评分${score}分，建议增加浇水或延长光照~`;
+            }
+        }
+
+        // 重置实验
+        function resetExperiment() {
+            experimentCount = 0;
+            plantGrowth.src = '1.png'; // 重置为初始植物图
+            growthScore.textContent = '评分：待生长';
+            experimentHistory.textContent = '';
+            reinforcementFeedback.textContent = '操作提示：尝试不同的“浇水+光照+施肥”组合，观察评分变化，找出让植物评分最高的最优策略！AI会像人类一样“从错误中学习，优化策略”~';
+        }
+    </script>
+</body>
+</html>
