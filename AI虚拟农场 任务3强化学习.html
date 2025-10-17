@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI虚拟农场 - 强化学习（种植策略）</title>
+    <title>AI虚拟农场 - 机器学习的核心学习范式</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 10px; }
+        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 6px; }
         .task-card { 
             border: 2px solid #ff9800; 
-            border-radius: 10px; 
-            padding: 15px; 
+            border-radius: 6px; 
+            padding: 6px; 
             background-color: #f8f9fa;
-            min-height: 500px;
+            min-height: 20px;
         }
         .task-title { color: #e65100; border-bottom: 1px dashed #ff9800; padding-bottom: 5px; margin: 0 0 15px 0; }
         .main-content {
@@ -114,19 +114,18 @@
     </style>
 </head>
 <body>
-    <h1>🌱 AI虚拟农场 - 强化学习任务：种植策略优化</h1>
-    <p>任务说明：通过调整“浇水、光照、施肥”策略，让植物生长评分最高！AI会从反馈中学习最优策略~</p>
+    <h1>🌱 AI虚拟农场 - 机器学习的核心学习范式</h1>
 
     <div class="task-card">
-        <h2 class="task-title">任务3：强化学习——种植策略优化</h2>
-        <p>植物生长受“浇水、光照、施肥”影响，尝试不同组合，看AI如何通过“试错-反馈”找到最优策略！</p>
+        <h2 class="task-title">任务3：优化玉米种植策略</h2>
+        <p>玉米生长受“浇水、光照、施肥”影响，尝试不同组合，看AI如何通过“试错-反馈”找到最优策略！</p>
 
         <div class="main-content">
             <!-- 左侧控制区：浇水+光照+施肥一排排列 -->
             <div class="control-section">
                 <div class="control-panel">
                     <div class="control-group">
-                        <h4>浇水策略</h4>
+                        <h4>浇水量</h4>
                         <select id="water">
                             <option value="少">少</option>
                             <option value="中">中</option>
@@ -152,7 +151,7 @@
                 </div>
 
                 <div class="button-panel">
-                    <button class="btn" onclick="growPlant()">让植物生长</button>
+                    <button class="btn" onclick="growPlant()">让玉米生长</button>
                     <button class="btn" onclick="resetExperiment()">重置实验</button>
                 </div>
             </div>
@@ -160,7 +159,7 @@
             <!-- 右侧生长状态区：与左侧紧凑对齐 -->
             <div class="growth-section">
                 <div class="growth-display">
-                    <h4>植物生长状态</h4>
+                    <h4>玉米生长状态</h4>
                     <img src="1.png" class="plant-img" id="plantGrowth" alt="植物生长状态">
                     <p id="growthScore">评分：待生长</p>
                 </div>
@@ -173,7 +172,7 @@
         </div>
 
         <div class="feedback" id="reinforcementFeedback">
-            操作提示：尝试不同的“浇水+光照+施肥”组合，观察评分变化，找出让植物评分最高的最优策略！AI会像人类一样“从错误中学习，优化策略”~
+            操作提示：尝试不同的“浇水+光照+施肥”组合，观察评分变化，找出让玉米评分最高的最优策略！AI会像人类一样“从错误中学习，优化策略”~
         </div>
     </div>
 
@@ -239,7 +238,7 @@
             plantGrowth.src = '1.png'; // 重置为初始植物图
             growthScore.textContent = '评分：待生长';
             experimentHistory.textContent = '';
-            reinforcementFeedback.textContent = '操作提示：尝试不同的“浇水+光照+施肥”组合，观察评分变化，找出让植物评分最高的最优策略！AI会像人类一样“从错误中学习，优化策略”~';
+            reinforcementFeedback.textContent = '操作提示：尝试不同的“浇水+光照+施肥”组合，观察评分变化，找出让玉米评分最高的最优策略！AI会像人类一样“从错误中学习，优化策略”~';
         }
     </script>
 </body>
