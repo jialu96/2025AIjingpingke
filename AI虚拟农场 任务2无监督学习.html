@@ -3,13 +3,13 @@
 <head>
     <title>AI虚拟农场 - 机器学习的核心学习范式</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 10px; }
+        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 6px; }
         .task-card { 
             border: 2px solid #42a5f5; 
-            border-radius: 10px; 
-            padding: 20px; 
+            border-radius: 6px; 
+            padding: 6px; 
             background-color: #f8f9fa;
-            min-height: 550px;
+            min-height: 20px;
         }
         .task-title { color: #1976d2; border-bottom: 1px dashed #42a5f5; padding-bottom: 5px; margin-bottom: 5px; }
         .image-gallery { 
@@ -41,7 +41,7 @@
             background-color: #42a5f5; 
             color: white; 
             border: none; 
-            padding: 10px 20px; 
+            padding: 8px 16px; 
             border-radius: 4px; 
             cursor: pointer; 
             margin-right: 15px;
@@ -79,38 +79,46 @@
 </head>
 <body>
     <h1>🌱 AI虚拟农场 - 机器学习的核心学习范式</h1>
-    <p>任务说明：无标签农作物照片，先自主分类，再看AI如何“自主找规律”聚类！</p>
 
     <div class="task-card">
-        <h2 class="task-title">任务2：无监督学习——农作物聚类</h2>
-        <p>农作物照片无标签，尝试自主分类后，看AI如何“自己找规律”分组！</p>
+        <h2 class="task-title">任务2：稻麦品种分类</h2>
 
         <div>
-            <h4>无标签农作物图片库（1-10号照片）</h4>
-            <div class="classify-tip">🔍 提示：尝试按“籽粒颜色”“穗状花序形状”等特征自主分类</div>
+            <h4>第一步：收集稻麦图片</h4>
+            <div class="classify-tip">🔍 在稻麦图片库（1-10号照片）中，没有品种名称，没有标注。</div>
             <div class="image-gallery" id="soilGallery">
-                <!-- 初始化1-10号无标签农作物照片 -->
+                <!-- 初始化1-10号无标签稻麦照片 -->
             </div>
+            <div class="feedback" id="unsupervisedFeedback">
+            请先观察图片库中稻麦的差异，尝试自主分类，在学习任务单上记录你的分类：组1：___号稻麦（分类依据：____）；组2：___号稻麦（分类依据：____）；组3：___号稻麦（分类依据：____）。
+             </div>
         </div>
 
-        <div class="control-panel">
-            <button class="btn" onclick="showUserClassify()">先找特征分类</button>
-            <button class="btn" onclick="trainUnsupervised()">再AI无监督聚类</button>
-        </div>
-
-        <div class="result-section">
-            <h4>分类结果对比</h4>
-            <div id="classificationResult" style="margin: 10px 0; font-size: 14px;">
-                点击“先找特征分类”或“再AI无监督聚类”查看结果
+      <div>
+            <h4>第二步：训练模型，发现特征</h4>
+            <div class="control-panel">
+                <button class="btn" onclick="trainUnsupervised()">训练</button>
             </div>
             <div class="cluster-result" id="clusterResult">
                 <!-- 聚类结果将动态生成 -->
             </div>
+       </div>
+
+        <div class="result-section">
+            <h4>第三步：测试验证模型，稻麦品种分类</h4>
+            <div class="control-panel">
+                <button class="btn" onclick="showUserClassify()">测试</button>
+            </div>
+            <div class="image-gallery" id="testGallery">
+                <!-- 测试用作物照片（可自行替换为其他照片） -->
+                <img src="211.png" class="soil-img" title="测试作物1">
+            </div>
+            <div class="feedback" id="unsupervisedFeedback2">
+                <!-- 测试结果将动态生成 -->
+            </div>
         </div>
 
-        <div class="feedback" id="unsupervisedFeedback">
-            操作提示：先观察图片库中农作物的差异，尝试自主分类，再点击“AI无监督聚类”，对比AI的分组逻辑~
-        </div>
+        
     </div>
 
     <script>
@@ -120,7 +128,7 @@
             const img = document.createElement('img');
             img.className = 'soil-img';
             img.src = `${i}.png`; // 引用1-10号图片（需与HTML同目录）
-            img.title = `${i-200}号农作物`;
+            img.title = `${i-200}号稻麦`;
             img.dataset.id = i;
             soilGallery.appendChild(img);
         }
@@ -128,15 +136,11 @@
         // 存储用户分类结果
         let userClusters = {};
 
-        // 无监督学习：用户自主分类
+        //无监督学习：测试
         function showUserClassify() {
-            const feedback = document.getElementById('unsupervisedFeedback');
-            feedback.textContent = '请记录你对1-10号农作物的分类逻辑（如按“籽粒颜色”“穗状花序形状”分组），再点击“AI无监督聚类”对比！';
-            document.getElementById('classificationResult').textContent = 
-                '请记录你的分类：    \n' +
-                '组1：______ 号农作物（分类依据：______）    \n' +
-                '组2：______ 号农作物（分类依据：______）    \n' +
-                '组3：______ 号农作物（分类依据：______）';
+            const feedback = document.getElementById('unsupervisedFeedback2');
+            feedback.textContent = 
+                '📊 测试结果：这张图片，籽粒颜色呈金黄色，穗状花序呈圆锥形，属于组1。' ;
         }
 
         // 无监督学习：AI聚类
@@ -145,7 +149,7 @@
             // 模拟AI聚类逻辑（按图片特征相似度分组，此处简化为3类）
             const clusters = {
                 '组1（籽粒颜色呈金黄色，穗状花序呈圆锥形）': [201, 203, 205, 208],
-                '组2（籽粒颜色呈白色；穗状花序呈椭圆形）': [202, 207, 210],
+                '组2（籽粒颜色呈白色，穗状花序呈椭圆形）': [202, 207, 210],
                 '组3（籽粒颜色呈棕色，穗状花序呈长条形）': [204, 206, 209]
             };
 
@@ -167,10 +171,6 @@
                 clusterResult.appendChild(groupDiv);
             }
 
-            document.getElementById('classificationResult').textContent = 
-                'AI聚类结果：根据“籽粒颜色”“穗状花序形状”等隐藏特征，将农作物分为3组，对比你的分类，看看有什么异同？';
-            document.getElementById('unsupervisedFeedback').textContent = 
-                'AI无监督学习的核心：无需标签，自主挖掘数据中的隐藏规律（如籽粒颜色、穗状花序形状）！';
         }
     </script>
 </body>
