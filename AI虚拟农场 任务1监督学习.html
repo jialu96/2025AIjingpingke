@@ -3,13 +3,13 @@
 <head>
     <title>AI虚拟农场 - 机器学习的核心学习范式</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 10px; }
+        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 6px; }
         .task-card { 
             border: 2px solid #6b9b37; 
-            border-radius: 10px; 
-            padding: 10px; 
+            border-radius: 6px; 
+            padding: 6px; 
             background-color: #f8f9fa;
-            min-height: 500px;
+            min-height: 20px;
         }
         .task-title { color: #2d6a4f; border-bottom: 1px dashed #6b9b37; padding-bottom: 5px; margin-bottom: 5px; }
         .image-gallery { 
@@ -38,12 +38,12 @@
         }
         .plant-img.immature { border-color: #2e7d32; } /* 未成熟作物：蓝色边框 */
         .plant-img.mature { border-color: #ef5350; } /* 成熟作物：红色边框 */
-        .control-panel { margin: 25px 0; }
+        .control-panel { margin: 5px 0; }
         .btn { 
             background-color: #4caf50; 
             color: white; 
             border: none; 
-            padding: 10px 20px; 
+            padding: 8px 16px; 
             border-radius: 4px; 
             cursor: pointer; 
             margin-right: 15px;
@@ -55,7 +55,7 @@
             padding: 12px; 
             border-radius: 5px; 
             background-color: #e8f5e9; 
-            min-height: 70px;
+            min-height: 20px;
             font-size: 15px;
             line-height: 1.5;
         }
@@ -64,33 +64,37 @@
             font-size: 14px; 
             color: #555;
         }
-        .test-section { margin-top: 30px; }
+        .test-section { margin-top: 20px; }
     </style>
 </head>
 <body>
     <h1>🌱 AI虚拟农场 - 机器学习的核心学习范式</h1>
-    <p>任务说明：通过带标签的番茄照片，训练AI识别“成熟番茄”与“未成熟番茄”！</p>
 
-    <!-- 仅保留监督学习任务，隐藏其余两个 -->
     <div class="task-card">
-        <h2 class="task-title">任务1：监督学习——番茄成熟度分类</h2>
-        <p>作物照片已标注“成熟（红色边框）”和“未成熟（蓝色边框）”，观察特征后教AI识别吧！</p>
+        <h2 class="task-title">任务1：区分番茄是否成熟</h2>
 
         <div>
-            <h4>带标签的作物图片库（1-10号照片）</h4>
-            <div class="label-tip">🔍 提示：1-5号为成熟作物（红色边框），6-10号为未成熟作物（蓝色边框）</div>
+            <h4>第一步：收集番茄图片，做标注</h4>
+            <div class="label-tip">🔍 在番茄图片库（1-10号照片）中，已提前做好标注，1-5号为成熟作物（红色边框），6-10号为未成熟作物（蓝色边框）。</div>
             <div class="image-gallery" id="cropGallery">
                 <!-- 初始化1-10号照片，自动分配成熟/未成熟标签 -->
             </div>
         </div>
 
-        <div class="control-panel">
-            <button class="btn" onclick="trainSupervised()">训练AI（学习作物特征）</button>
-            <button class="btn" onclick="testSupervised()">测试AI（新作物识别）</button>
+        <div class="train-section">
+            <h4>第二步：训练模型，学习特征</h4>
+            <div class="control-panel">
+                <button class="btn" onclick="trainSupervised()">训练</button>
+            </div>
+            <div class="feedback" id="supervisedFeedback">
+                训练结果
+            </div>
         </div>
 
+        
+
         <div class="test-section">
-            <h4>AI测试区（新作物识别）</h4>
+            <h4>第三步：测试验证模型，区分番茄是否成熟</h4>
             <div class="image-gallery" id="testGallery">
                 <!-- 测试用作物照片（可自行替换为其他照片） -->
                 <img src="111.png" class="plant-img" title="测试作物1" data-mature="true">
@@ -99,11 +103,15 @@
                 <img src="114.png" class="plant-img" title="测试作物4" data-mature="false">
                 <img src="115.png" class="plant-img" title="测试作物5" data-mature="true">
             </div>
+            <div class="control-panel">
+                <button class="btn" onclick="testSupervised()">测试</button>
+            </div>
+           <div class="feedback" id="supervisedFeedback2">
+                测试结果
+            </div> 
         </div>
 
-        <div class="feedback" id="supervisedFeedback">
-            操作提示：先观察图片库中成熟/未成熟作物的差异，再点击“训练AI”，最后用“测试AI”验证效果~
-        </div>
+        
     </div>
 
     <script>
@@ -123,11 +131,7 @@
             const feedback = document.getElementById('supervisedFeedback');
             // 模拟AI学习过程，显示特征提取逻辑
             feedback.innerHTML = 
-                '✅ AI正在训练...<br>' +
-                '🔍 发现特征规律：<br>' +
-                '- 成熟作物（1-5号）：叶片颜色更深、果实颜色更偏红<br>' +
-                '- 未成熟作物（6-10号）：叶片颜色较浅、果实颜色更偏绿<br>' +
-                '📚 学习完成！可点击“测试AI”验证识别效果';
+                '📚 发现特征规律：（1-5号）成熟番茄：叶片颜色更深、果实颜色更偏红；（6-10号）未成熟番茄：叶片颜色较浅、果实颜色更偏绿。' ;
         }
 
         // 监督学习：测试逻辑（模拟AI识别新作物）
@@ -151,12 +155,10 @@
 
             // 计算正确率并显示反馈
             const accuracy = (correctCount / testImgs.length) * 100;
-            document.getElementById('supervisedFeedback').innerHTML = 
-                `📊 AI测试完成！<br>` +
-                `📚 AI测试结果：第1、3、5张是成熟作物。第2、4张是未成熟作物。<br>` +
-                `✅ 正确识别：${correctCount}/${testImgs.length} 张<br>` +
-                `📈 识别正确率：${accuracy}%<br>` +
-                `💡 原理：AI记住了“成熟作物特征”，通过对比特征完成识别（这就是监督学习：有标签数据引导学习）`;
+            document.getElementById('supervisedFeedback2').innerHTML = 
+                `📊 测试结果：第1、3、5张是成熟番茄。第2、4张是未成熟番茄。<br>` +
+                `✅ 正确识别：${correctCount}/${testImgs.length} 张；识别正确率：${accuracy}%。<br>` +
+                `💡 结论：机器记住了“成熟和不成熟番茄特征”，通过对比特征完成区分番茄是否成熟的任务。`;
         }
     </script>
 </body>
